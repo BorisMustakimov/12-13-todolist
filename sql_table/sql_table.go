@@ -7,7 +7,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func sql_table() {
+func Sql_table() {
 	db, _ := sql.Open("sqlite", "./scheduler.db")
 
 	statement, err := db.Prepare(`

@@ -1,10 +1,10 @@
-package main
+package sql_table
 
 import (
 	"database/sql"
 	"fmt"
 
-	"github.com/jmoiron/sqlx"
+	//"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 )
 

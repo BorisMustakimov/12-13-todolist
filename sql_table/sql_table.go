@@ -5,11 +5,12 @@ import (
 	"fmt"
 
 	//"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
+	//_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 func Sql_table() {
-	db, _ := sql.Open("sqlite3", "./scheduler.db")
+	db, _ := sql.Open("sqlite", "./scheduler.db")
 
 	statement, err := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS scheduler (

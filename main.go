@@ -11,6 +11,8 @@ func handleRequest() {
 }
 
 func main() {
+	sqltable.Sql_table()
 	handleRequest()
-	Sql_table()
+	
+	
 }

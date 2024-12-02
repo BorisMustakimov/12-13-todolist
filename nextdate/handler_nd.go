@@ -1,6 +1,7 @@
 package nextdate
 
 import (
+	"log"
 	"net/http"
 	"time"
 )
@@ -24,6 +25,8 @@ func HandlerNextDate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(nextDate))
+	_, err = w.Write([]byte(nextDate))
+	if err != nil {
+		log.Printf("ошибка ответа: %v", err)
+	}
 }

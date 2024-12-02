@@ -29,13 +29,16 @@ func NextDate(now time.Time, date string, repeat string) (string, error) {
 	switch dateRepeat[0] {
 
 	case "d":
+
+		if len(dateRepeat) != 2 {
+			return "", fmt.Errorf("не указано повторение")
+		}
+
 		days, err := strconv.Atoi(dateRepeat[1])
 		if err != nil || days < 0 || days > 400 {
 			return "", fmt.Errorf("указано неверное число (необходимо 1-400)")
 		}
-		if len(dateRepeat) != 2 {
-			return "", fmt.Errorf("не указано повторение")
-		}
+
 		if parsedDate.Equal(now) {
 			nextDate = now
 		} else {

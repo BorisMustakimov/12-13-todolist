@@ -33,7 +33,7 @@ func NextDate(now time.Time, date string, repeat string) (string, error) {
 		if err != nil || days < 0 || days > 400 {
 			return "", fmt.Errorf("указано неверное число (необходимо 1-400)")
 		}
-		if len(dateRepeat) == 0 {
+		if len(dateRepeat) != 2 {
 			return "", fmt.Errorf("не указано повторение")
 		}
 		if parsedDate.Equal(now) {

@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/BorisMustakimov/12-13-todolist/nextdate"
+	nextdate "github.com/BorisMustakimov/12-13-todolist/nextdate"
 	sqltable "github.com/BorisMustakimov/12-13-todolist/sql_table"
 	"github.com/go-chi/chi/v5"
 )
@@ -21,7 +21,7 @@ func handleRequest() {
 }
 
 func main() {
-	sqltable.Sql_table()
-	handleRequest()
 
+	handleRequest()
+	sqltable.Sql_table()
 }

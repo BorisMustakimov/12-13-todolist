@@ -45,18 +45,9 @@ func NextDate(now time.Time, date string, repeat string) (string, error) {
 			}
 		}
 	case "y":
-		years, err := strconv.Atoi(dateRepeat[1])
-		if err != nil {
-			return "", fmt.Errorf("неверный формат даты")
-		}
-		if parsedDate.Equal(now) {
-			nextDate = now
-		} else {
-			nextDate = parsedDate.AddDate(years, 0, 0)
-			for nextDate.Before(now) {
-				nextDate = nextDate.AddDate(years, 0, 0)
-			}
-
+		nextDate = parsedDate.AddDate(1, 0, 0)
+		for nextDate.Before(now) {
+			nextDate = nextDate.AddDate(1, 0, 0)
 		}
 	case "m":
 		return "", fmt.Errorf("данная функци пока не доступна")

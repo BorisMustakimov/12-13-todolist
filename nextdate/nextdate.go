@@ -30,7 +30,7 @@ func NextDate(now time.Time, date string, repeat string) (string, error) {
 
 	case "d":
 		days, err := strconv.Atoi(dateRepeat[1])
-		if err != nil || days < 1 || days > 400 {
+		if err != nil || days < 0 || days > 400 {
 			return "", fmt.Errorf("указано неверное число (необходимо 1-400)")
 		}
 		if len(dateRepeat) == 0 {

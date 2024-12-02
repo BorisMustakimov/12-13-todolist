@@ -11,6 +11,8 @@ const DateFormat = "20060102"
 
 func NextDate(now time.Time, date string, repeat string) (string, error) {
 
+	now = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+
 	var nextDate time.Time
 
 	parsedDate, err := time.Parse(DateFormat, date)
@@ -60,6 +62,8 @@ func NextDate(now time.Time, date string, repeat string) (string, error) {
 		return "", fmt.Errorf("данная функци пока не доступна")
 	case "w":
 		return "", fmt.Errorf("данная функци пока не доступна")
+	default:
+		return "", fmt.Errorf("неверный формат повторения")
 	}
-	return "", nil
+	return nextDate.Format(DateFormat), nil
 }

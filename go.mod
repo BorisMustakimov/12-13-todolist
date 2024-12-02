@@ -3,6 +3,7 @@ module github.com/BorisMustakimov/12-13-todolist
 go 1.23.1
 
 require (
+	github.com/go-chi/chi/v5 v5.1.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/stretchr/testify v1.10.0
 	modernc.org/sqlite v1.34.1

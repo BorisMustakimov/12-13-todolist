@@ -1,18 +1,41 @@
 package sqltable
 
 import (
-	"database/sql"
 	"fmt"
+	"os"
+	"path/filepath"
 
 	//"github.com/jmoiron/sqlx"
 	//_ "github.com/mattn/go-sqlite3"
+	"github.com/BorisMustakimov/12-13-todolist/config"
+	"github.com/jmoiron/sqlx"
 	_ "modernc.org/sqlite"
 )
 
-func Sql_table() {
-	db, _ := sql.Open("sqlite", "./scheduler.db")
+func Sql_table(cfg *config.Config) (*sqlx.DB, error) {
 
-	statement, err := db.Prepare(`
+	dbPath := cfg.DBFile
+	if dbPath == "" {
+		appPath, err := os.Executable()
+		if err != nil {
+			return nil, fmt.Errorf("ошибка пулучения пути к БД")
+		}
+		dbPath = filepath.Join(filepath.Dir(appPath), "scheduler.db")
+	}
+
+	// Проверка существования базы данных
+	_, err := os.Stat(dbPath)
+	install := os.IsNotExist(err)
+
+	// Подключение к базе данных
+	db, err := sqlx.Open("sqlite", dbPath)
+	if err != nil {
+		return nil, fmt.Errorf("ошибка создания таблицы")
+	}
+
+	// Если база данных не существует, создаём таблицу и индекс
+	if install {
+		_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS scheduler (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		date TEXT NOT NULL,
@@ -22,12 +45,11 @@ func Sql_table() {
 	);
 	CREATE INDEX IF NOT EXISTS idx_scheduler_date ON scheduler(date);
 `)
-	if err != nil {
-		fmt.Println(err)
-		return
+		if err != nil {
+			return nil, fmt.Errorf("ошибка создания таблицы")
+		}
+		fmt.Println("таблица создана успешно")
 	}
-	defer db.Close()
 
-	statement.Exec()
-
+	return db, nil
 }

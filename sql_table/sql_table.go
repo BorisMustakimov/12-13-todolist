@@ -5,8 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	//"github.com/jmoiron/sqlx"
-	//_ "github.com/mattn/go-sqlite3"
 	"github.com/BorisMustakimov/12-13-todolist/config"
 	"github.com/jmoiron/sqlx"
 	_ "modernc.org/sqlite"

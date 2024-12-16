@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// при запросе получаем дату повторения
 func HandlerNextDate(w http.ResponseWriter, r *http.Request) {
 
 	now := r.URL.Query().Get("now")

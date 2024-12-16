@@ -12,6 +12,7 @@ import (
 
 const Limit = 50
 
+// определяем интерфейс для работы с задачами 
 type TaskRepository interface {
 	Create(task *task.Task) (int64, error)
 	SearchTasks(filter Filter, id string) ([]task.Task, error)
@@ -23,6 +24,7 @@ type TaskRepo struct {
 	db *sqlx.DB
 }
 
+// используем для фильтрации задач
 type Filter struct {
 	ID     []string
 	Search string
@@ -33,6 +35,7 @@ func NewTaskRepo(db *sqlx.DB) TaskRepository {
 	return &TaskRepo{db: db}
 }
 
+// создание задачи
 func (r *TaskRepo) Create(task *task.Task) (int64, error) {
 	res, err := r.db.Exec(
 		`INSERT INTO scheduler (date, title, comment, repeat) VALUES (?,?,?,?)`,

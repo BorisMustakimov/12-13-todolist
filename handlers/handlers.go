@@ -38,20 +38,21 @@ func (h *TaskHandler) TaskHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodDelete:
 		h.DeleteTaskHandler(w, r)
 	default:
-		http.Error(w, `{"error":"Method not allowed"}`, http.StatusMethodNotAllowed)
+		http.Error(w, `{"error":"данного метода обработки нет"}`, http.StatusMethodNotAllowed)
 	}
 }
 
+// добавить задачу
 func (h *TaskHandler) AddTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task task.Task
 
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
-		http.Error(w, `{"error":"Failed to decode JSON"}`, http.StatusBadRequest)
+		http.Error(w, `{"error":"проблема декодирования JSON"}`, http.StatusBadRequest)
 		return
 	}
 
 	if task.Title == "" {
-		http.Error(w, `{"error":"Empty title field"}`, http.StatusBadRequest)
+		http.Error(w, `{"error":"пустое title"}`, http.StatusBadRequest)
 		return
 	}
 
@@ -65,10 +66,11 @@ func (h *TaskHandler) AddTaskHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{"id": id})
 }
 
+// отмечаем выполнение задачи
 func (h *TaskHandler) DoneTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	if id == "" {
-		http.Error(w, `{"error":"Missing task ID"}`, http.StatusBadRequest)
+		http.Error(w, `{"error":"нет ID задачи"}`, http.StatusBadRequest)
 		return
 	}
 
@@ -76,8 +78,8 @@ func (h *TaskHandler) DoneTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := h.TaskService.TaskDone(id, now)
 	if err != nil {
-		if err.Error() == "task not found" {
-			http.Error(w, `{"error":"Task not found"}`, http.StatusNotFound)
+		if err.Error() == "задача не найдена" {
+			http.Error(w, `{"error":"задача не найдена"}`, http.StatusNotFound)
 		} else {
 			http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusInternalServerError)
 		}
@@ -111,7 +113,7 @@ func (h *TaskHandler) GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 func (h *TaskHandler) GetTaskInfoHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	if id == "" {
-		http.Error(w, `{"error":"id is required"}`, http.StatusBadRequest)
+		http.Error(w, `{"error":"требуется id"}`, http.StatusBadRequest)
 		return
 	}
 
@@ -122,7 +124,7 @@ func (h *TaskHandler) GetTaskInfoHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	if len(tasks) == 0 {
-		http.Error(w, `{"error":"task not found"}`, http.StatusNotFound)
+		http.Error(w, `{"error":"задача не найдена"}`, http.StatusNotFound)
 		return
 	}
 
@@ -130,7 +132,7 @@ func (h *TaskHandler) GetTaskInfoHandler(w http.ResponseWriter, r *http.Request)
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(task); err != nil {
-		http.Error(w, `{"error":"failed to encode task"}`, http.StatusInternalServerError)
+		http.Error(w, `{"error":"проблема кодировки задачи"}`, http.StatusInternalServerError)
 	}
 }
 
@@ -139,13 +141,13 @@ func (h *TaskHandler) UpdateTaskHandler(w http.ResponseWriter, r *http.Request) 
 	var task task.Task
 
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
-		http.Error(w, `{"error":"Failed to decode JSON"}`, http.StatusBadRequest)
+		http.Error(w, `{"error":"проблема декодирования JSON"}`, http.StatusBadRequest)
 		return
 	}
 
 	if err := h.TaskService.UpdateTask(&task); err != nil {
 		if err.Error() == "task not found" {
-			http.Error(w, `{"error":"Task not found"}`, http.StatusNotFound)
+			http.Error(w, `{"error":"задача не найдена"}`, http.StatusNotFound)
 		} else {
 			http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusInternalServerError)
 		}
@@ -156,7 +158,7 @@ func (h *TaskHandler) UpdateTaskHandler(w http.ResponseWriter, r *http.Request) 
 	json.NewEncoder(w).Encode(map[string]interface{}{})
 }
 
-// Удаление задачи 
+// Удаление задачи
 func (h *TaskHandler) DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 

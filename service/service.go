@@ -78,6 +78,7 @@ func (s *TaskServiceImpl) GetTasks(search, id string) ([]task.Task, error) {
 	return tasks, nil
 }
 
+// редактирование задач
 func (s *TaskServiceImpl) UpdateTask(task *task.Task) error {
 	if task.ID == "" || task.Title == "" {
 		return fmt.Errorf("ID или title пустое")
@@ -119,12 +120,47 @@ func (s *TaskServiceImpl) UpdateTask(task *task.Task) error {
 // Удаление задачи
 func (s *TaskServiceImpl) DeleteTask(id string) error {
 	if id == "" {
-		return fmt.Errorf("missing task ID")
+		return fmt.Errorf("нет ID")
 	}
 
 	err := s.Repo.Delete(id)
 	if err != nil {
-		return fmt.Errorf("failed to delete task: %v", err)
+		return fmt.Errorf("ошибка удаления задачи: %v", err)
+	}
+
+	return nil
+}
+
+// Выполнение задачи
+func (s *TaskServiceImpl) TaskDone(id string, now time.Time) error {
+	filter := repository.Filter{ID: []string{id}} // Используем фильтр для поиска по ID
+	tasks, err := s.Repo.SearchTasks(filter, id)
+	if err != nil {
+		return fmt.Errorf("неудалось получить задание: %v", err)
+	}
+	if len(tasks) == 0 {
+		return fmt.Errorf("задание не найдено")
+	}
+
+	task := tasks[0] // Получаем первую задачу (если она найдена)
+
+	// Если задача не имеет повторений, удалить её
+	if task.Repeat == "" {
+		if err := s.Repo.Delete(task.ID); err != nil {
+			return fmt.Errorf("ошибка удаления задания: %v", err)
+		}
+	} else {
+		// Если задача имеет повторения, вычислить следующую дату
+		nextDate, err := nextdate.NextDate(now, task.Date, task.Repeat)
+		if err != nil {
+			return fmt.Errorf("невозможно расчитать дату: %v", err)
+		}
+
+		// Обновляем дату задачи
+		task.Date = nextDate
+		if err := s.Repo.UpdateTask(&task); err != nil {
+			return fmt.Errorf("failed to update task date: %v", err)
+		}
 	}
 
 	return nil

@@ -9,6 +9,7 @@ import (
 
 const DateFormat = "20060102"
 
+// формируем правила повторения d, y, m, w
 func NextDate(now time.Time, date string, repeat string) (string, error) {
 
 	now = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())

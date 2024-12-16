@@ -9,7 +9,7 @@ import (
 type Config struct {
 	ServerAddress string `env:"TODO_SERVER_ADDRESS" env-default:"localhost:7540"`
 	Version       string `env:"TODO_VERSION" env-default:"v1.0"`
-	DBFile        string `env:"TODO_DBFILE" env-default:"./scheduler.db"`
+	DBFile string `env:"TODO_DBFILE" env-default:"./scheduler.db"`
 }
 
 func MustLoad() (*Config, error) {
